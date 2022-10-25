@@ -10,8 +10,8 @@
 # sterm | interactive slurm terminal wrapper
 #
 # Author: Tobias Jakobi
-# tobias.jakobi@med.uni-heidelberg.de
-# Date: 02/06/2016
+# tjakobi@arizona.edu
+# Date: 10/25/2022
 
 # default values
 #NAME="interactive_shell_${USER}"
@@ -44,7 +44,7 @@ case $key in
     shift
     ;;
     m|--mail)
-    MAIL="--mail-type=FAIL --mail-user=$USER@age.mpg.de"
+    MAIL="--mail-type=FAIL --mail-user=$USER@arizona.edu"
     shift
     ;;
     -g|--general)
