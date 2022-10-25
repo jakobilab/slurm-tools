@@ -9,7 +9,7 @@ job_id=$(echo $2 | cut -f 2 -d "=" | cut -f 1 -d " ")
 
 # gather important information through sacct from SLURM
 
-job_info=$(/biosw/slurm/current/bin/sacct --jobs=$job_id --allocations --parsable2 --format JobName,NodeList,Partition,User,Account,ExitCode,Timelimit,NCPUS,NNodes,ReqMem,Submit,Start,End,Elapsed,State,Comment) || exit 
+job_info=$(/beegfs/biosw/slurm/current/bin/sacct --jobs=$job_id --allocations --parsable2 --format JobName,NodeList,Partition,User,Account,ExitCode,Timelimit,NCPUS,NNodes,ReqMem,Submit,Start,End,Elapsed,State,Comment) || exit 
 
 
 # prepare a table for the email body with job information
@@ -50,9 +50,9 @@ echo -e "\n\nSincerly,\nYour friendly SLURM daemon\n" >> /tmp/$job_id.body
 # also the have two names: "job name" and "batch"; we only want 
 # the real name and filter out batch
 
-node=$(sacct --jobs=$job_id --format=NodeList --noheader | sort -u)
-state=$(sacct --jobs=$job_id --format=state --noheader | sort -u)
-name=$(sacct --jobs=$job_id --format=JobName --noheader | head -n1)
+node=$(/beegfs/biosw/slurm/current/bin/sacct --jobs=$job_id --format=NodeList --noheader | sort -u)
+state=$(/beegfs/biosw/slurm/current/bin/sacct --jobs=$job_id --format=state --noheader | sort -u)
+name=$(/beegfs/biosw/slurm/current/bin/sacct --jobs=$job_id --format=JobName --noheader | head -n1)
 
 # remove white spaces from variable names
 
@@ -62,7 +62,7 @@ name=${name//[[:blank:]]/}
 
 # send the email
 
-/usr/bin/mail -s "Job ${name} on $node [Job $job_id] changed status to $state" $3 < /tmp/$job_id.body
+/usr/bin/mailx  -s "SLURM: ${job_id}@${node} -> ${state}" $3 < /tmp/$job_id.body
 
 # delete the temporary email text
 rm /tmp/$job_id.body
