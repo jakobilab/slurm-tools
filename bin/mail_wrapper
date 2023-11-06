@@ -11,18 +11,22 @@ job_id=$(echo $2 | cut -f 2 -d "=" | cut -f 1 -d " ")
 
 job_info=$(/beegfs/biosw/slurm/current/bin/sacct --jobs=$job_id --allocations --parsable2 --format JobName,NodeList,Partition,User,Account,ExitCode,Timelimit,NCPUS,NNodes,ReqMem,Submit,Start,End,Elapsed,State,Comment) || exit 
 
+node=echo $job_info | tail -n +2 | cut -d '|' -f 2
+state=echo $job_info | tail -n +2 | cut -d '|' -f 15
+node=echo $job_info | tail -n +2 | cut -d '|' -f 1
+
 
 # prepare a table for the email body with job information
 # in principle this is a transposed version of the sacct output
 
 content=$(echo "$job_info" | awk -F "|" '
-{ 
+{
     for (i=1; i<=NF; i++)  {
         a[NR,i] = $i
     }
 }
 NF>p { p = NF }
-END {    
+END {
     for(j=1; j<=p; j++) {
         str=a[1,j]
         for(i=2; i<=NR; i++){
@@ -47,12 +51,12 @@ echo -e "\n\nSincerly,\nYour friendly SLURM daemon\n" >> /tmp/$job_id.body
 # job name
 
 # sbatch jobs have two rows in the job table, therefore sort -u
-# also the have two names: "job name" and "batch"; we only want 
+# also the have two names: "job name" and "batch"; we only want
 # the real name and filter out batch
 
-node=$(/beegfs/biosw/slurm/current/bin/sacct --jobs=$job_id --format=NodeList --noheader | sort -u)
-state=$(/beegfs/biosw/slurm/current/bin/sacct --jobs=$job_id --format=state --noheader | sort -u)
-name=$(/beegfs/biosw/slurm/current/bin/sacct --jobs=$job_id --format=JobName --noheader | head -n1)
+#node=$(/beegfs/biosw/slurm/current/bin/sacct --jobs=$job_id --format=NodeList --noheader | sort -u)
+#state=$(/beegfs/biosw/slurm/current/bin/sacct --jobs=$job_id --format=state --noheader | sort -u)
+#name=$(/beegfs/biosw/slurm/current/bin/sacct --jobs=$job_id --format=JobName --noheader | head -n1)
 
 # remove white spaces from variable names
 
