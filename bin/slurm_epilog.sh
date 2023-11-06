@@ -35,7 +35,7 @@ done
 # find /dev/shm -name 'psm_shm.*' -uid $SLURM_UID -delete
 
 # clean /tmp
-find /tmp -uid $SLURM_UID -delete
+#find /tmp -uid $SLURM_UID -delete ! -path '*tmux*'
 
 # Exit cleanly when finishing
 exit 0
